@@ -8,7 +8,7 @@
 
 import UIKit
 
-class InputViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class InputViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var userNameTextField: UITextField!
@@ -16,6 +16,7 @@ class InputViewController: UIViewController, UIImagePickerControllerDelegate, UI
         super.viewDidLoad()
 
         logoImageView.layer.cornerRadius = 20.0
+        userNameTextField.delegate = self
         
     }
     
@@ -28,6 +29,11 @@ class InputViewController: UIViewController, UIImagePickerControllerDelegate, UI
     //他のところをタッチしたらキーボードを閉じる
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         userNameTextField.resignFirstResponder()
+    }
+    //returnを押したらキーボードを閉じる
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
     //決定ボタンを押したときの処理
@@ -53,10 +59,13 @@ class InputViewController: UIViewController, UIImagePickerControllerDelegate, UI
         
         //アラートを出す
         //カメラorアルバムを選択させる
+        showAlert()
+       
     }
     
     //カメラ立ち上げ
     func doCamera() {
+        print("doCameraが呼ばれたよ")
         let sourceType:UIImagePickerController.SourceType = .camera
         
         //カメラが利用可能かチェックする
@@ -70,6 +79,7 @@ class InputViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     //アルバムの立ち上げ
     func doAlbum() {
+        print("doAlbumが呼ばれたよ")
         let sourceType:UIImagePickerController.SourceType = .photoLibrary
         
         //アルバムが利用可能かチェックする
@@ -101,6 +111,22 @@ class InputViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     //アラート
     func showAlert() {
+        let alert = UIAlertController(title: "選択", message: "どちらを選択しますか？", preferredStyle: .actionSheet)
         
+        let action1 = UIAlertAction(title: "カメラ", style: .default) { (alert) in
+            self.doCamera()
+        }
+        
+        let action2 = UIAlertAction(title: "アルバム", style: .default) { (alert) in
+            self.doAlbum()
+        }
+        
+        let action3 = UIAlertAction(title: "キャンセル", style: .cancel)
+        
+        alert.addAction(action1)
+        alert.addAction(action2)
+        alert.addAction(action3)
+        
+        present(alert, animated: true, completion: nil)
     }
 }
